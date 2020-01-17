@@ -16,29 +16,30 @@ class Node extends Component {
         let node = this.state;
         let url = node.url + '/api/chain';
 
-        console.log('fetching from ', url, '...');
-
-        fetch(url).then(res => {
-            console.log('fetch complete');
+        fetch(url,{
+            mode: 'cors',
+        }).then(res => {
             return res.json();
         }).then(result => {
-            console.log(result);
             this.setState({
                 error: null,
                 isLoaded: true,
                 url: node.url,
                 name: node.name,
-                lastBlockNumber: result.blockNumber
+                lastBlockNumber: result.blockNumber,
+                lastBlockHash: result.hash
             })
         },
             (error) => {
-                console.error(error);
                 this.setState({
                     isLoaded: true,
                     error: error.message
                 });
             }).catch(error => {
-                console.error(error)
+                this.setState({
+                    isLoaded: true,
+                    error: error
+                });
             });
 
     }
@@ -56,9 +57,12 @@ class Node extends Component {
         }
         else {
             return (
-                <div>
-                    <b>Last Block</b>: {this.state.lastBlockNumber}
-                </div>
+                <dl>
+                    <dt>Chain Length</dt>
+                    <dd>{this.state.lastBlockNumber}</dd>
+                    <dt>Last Block Hash</dt>
+                    <dd>{this.state.lastBlockHash}</dd>
+                </dl>
             )
         }
     }
