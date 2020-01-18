@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Container,  Grid, Typography } from '@material-ui/core';
+
 import Node from './Node'
 
 class App extends Component {
@@ -18,14 +20,19 @@ class App extends Component {
 
     render() {
         return (
-            <div>
-                {this.state.nodes.map(node => (
-                    <div key={node.name}>
-                        <h1>{node.name}</h1>
-                        <Node node={node} />
-                    </div>
-                ))}
-            </div >
+            <Container fixed>
+            <Typography component="div" style={{ backgroundColor: '#050', height: '100vh' }}>
+                <Grid container justify="center" spacing={2}>
+                    {
+                        this.state.nodes.map(node => (
+                            <Grid item key={node.name} xs={5}>
+                                <Node node={node} />
+                            </Grid>
+                        ))
+                    }
+                </Grid>
+            </Typography>
+            </Container>
         )
     }
 }

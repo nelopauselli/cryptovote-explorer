@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Card, CardContent, Typography  } from '@material-ui/core';
 
 class Node extends Component {
     constructor(props) {
@@ -57,12 +58,19 @@ class Node extends Component {
         }
         else {
             return (
-                <dl>
-                    <dt>Chain Length</dt>
-                    <dd>{this.state.lastBlockNumber}</dd>
-                    <dt>Last Block Hash</dt>
-                    <dd>{this.state.lastBlockHash}</dd>
-                </dl>
+                <Card>
+                    <CardContent>
+                        <Typography variant="h3" component="h1">
+                            {this.state.name}
+                        </Typography>
+                        <Typography variant="h5" component="h2">
+                            #{this.state.lastBlockNumber}
+                        </Typography>
+                        <Typography color="textSecondary">
+                            {this.state.lastBlockHash}
+                        </Typography>
+                    </CardContent>
+                </Card>
             )
         }
     }
