@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container,  Grid, Typography } from '@material-ui/core';
+import { Container,  Grid } from '@material-ui/core';
 
 import Node from './Node'
 
@@ -21,7 +21,6 @@ class App extends Component {
     render() {
         return (
             <Container fixed>
-            <Typography component="div" style={{ backgroundColor: '#050', height: '100vh' }}>
                 <Grid container justify="center" spacing={2}>
                     {
                         this.state.nodes.map(node => (
@@ -31,7 +30,6 @@ class App extends Component {
                         ))
                     }
                 </Grid>
-            </Typography>
             </Container>
         )
     }
