@@ -9,17 +9,16 @@ import {
 import { Container, CssBaseline } from '@material-ui/core';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
-import purple from '@material-ui/core/colors/purple';
 import green from '@material-ui/core/colors/green';
+import purple from '@material-ui/core/colors/purple';
 
 import Network from './Network';
 import Node from './Node';
 
 const theme = createMuiTheme({
     palette: {
-        type: "dark",
-        primary: purple,
-        secondary: green,
+        primary: green,
+        secondary: purple,
     },
     status: {
         danger: 'orange',
@@ -42,21 +41,21 @@ export default function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Container bgcolor="primary" >
+            <Container>
                 <Router>
-                        <Switch>
-                            <Route path="/node/:url" component={Node}>
-                            </Route>
-                            <Route path="/about">
-                                <About />
-                            </Route>
-                            <Route path="/users">
-                                <Users />
-                            </Route>
-                            <Route path="/">
-                                <Network />
-                            </Route>
-                        </Switch>
+                    <Switch>
+                        <Route path="/node/:url" component={Node}>
+                        </Route>
+                        <Route path="/about">
+                            <About />
+                        </Route>
+                        <Route path="/users">
+                            <Users />
+                        </Route>
+                        <Route path="/">
+                            <Network />
+                        </Route>
+                    </Switch>
                 </Router>
             </Container>
         </ThemeProvider>

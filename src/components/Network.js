@@ -14,7 +14,7 @@ class Network extends Component {
                 { name: 'cryptovote1', url: 'http://192.168.0.128:8081' },
                 { name: 'cryptovote2', url: 'http://192.168.0.128:8082' },
                 { name: 'cryptovote3', url: 'http://192.168.0.128:8083' },
-                { name: 'cryptovote4', url: 'http://192.168.0.128:8084' },
+                { name: 'localhost', url: 'http://localhost:5000' },
             ]
         };
     }

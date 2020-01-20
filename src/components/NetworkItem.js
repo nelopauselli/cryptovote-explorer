@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { Card, CardContent, CardActions, Typography, Box, Button } from '@material-ui/core';
+import { Card, CardHeader, CardContent, CardActions, Typography, Box, Button } from '@material-ui/core';
+import { Avatar, IconButton } from '@material-ui/core';
+import { List, ListItem, ListItemText, ListItemAvatar } from '@material-ui/core';
+
+import SearchIcon from '@material-ui/icons/Search';
+import BlocksIcon from '@material-ui/icons/Apps';
+import HashIcon from '@material-ui/icons/Memory';
+import BranchIcon from '@material-ui/icons/Share';
+import PeersIcon from '@material-ui/icons/AccountTree';
+
 import { Link } from "react-router-dom";
 
 class NetworkItem extends Component {
@@ -12,31 +21,34 @@ class NetworkItem extends Component {
             urlEncoded: encodeURIComponent(props.node.url),
             name: props.node.name,
             lastBlockNumber: '?',
-            blocks: []
+            lastBlockHash: '?',
+            peers: [],
+            branches: '?'
         };
     }
 
     componentDidMount() {
+        this.loadNodeInfo();
+        this.loadPeersInfo();
+    }
+
+    loadNodeInfo() {
         let node = this.state;
-        let url = node.url + '/api/chain';
+        let url = node.url + '/api/node';
 
         fetch(url, {
             mode: 'cors',
         }).then(res => {
             return res.json();
         }).then(result => {
-            let blocks = [];
-            for (let b = 0; b <= result.blockNumber; b++)
-                blocks.push(b);
-
             this.setState({
                 error: null,
                 isLoaded: true,
-                url: node.url,
-                name: node.name,
-                lastBlockNumber: result.blockNumber,
-                lastBlockHash: result.hash,
-                blocks: blocks
+                url: result.publicUrl,
+                name: result.name,
+                branches: result.branches,
+                lastBlockNumber: result.lastBlockNumber,
+                lastBlockHash: result.lastBlockHash
             })
         },
             (error) => {
@@ -50,7 +62,30 @@ class NetworkItem extends Component {
                     error: error
                 });
             });
+    }
 
+    loadPeersInfo() {
+        let node = this.state;
+        let url = node.url + '/api/peer';
+
+        fetch(url, {
+            mode: 'cors',
+        }).then(res => {
+            return res.json();
+        }).then(result => {
+            this.setState({
+                peers: result
+            })
+        },
+            (error) => {
+                this.setState({
+                    error: error.message
+                });
+            }).catch(error => {
+                this.setState({
+                    error: error
+                });
+            });
     }
 
     render() {
@@ -58,7 +93,7 @@ class NetworkItem extends Component {
             return (
                 <Card>
                     <CardContent>
-                        <Typography variant="h3" component="h1" color="primary">
+                        <Typography variant="h4" component="h2" color="primary">
                             {this.state.name}
                         </Typography>
                         <Typography color="error">
@@ -72,7 +107,7 @@ class NetworkItem extends Component {
             return (
                 <Card>
                     <CardContent>
-                        <Typography variant="h3" component="h1" color="primary">
+                        <Typography variant="h4" component="h2" color="primary">
                             {this.state.name}
                         </Typography>
                         <Typography>
@@ -85,24 +120,55 @@ class NetworkItem extends Component {
         else {
             return (
                 <Card>
+                    <CardHeader
+                        avatar={
+                            <Avatar aria-label="recipe">
+                                N
+                            </Avatar>
+                        }
+                        action={
+                            <Link to={`/node/${this.state.urlEncoded}`}>
+                                <IconButton aria-label="settings">
+                                    <SearchIcon />
+                                </IconButton>
+                            </Link>
+                        }
+                        title={
+                            <Typography variant="h4" component="h2" color="primary">
+                                {this.state.name}
+                            </Typography>
+                        }
+                        subheader={this.state.url}
+
+                    />
                     <CardContent>
-                        <Typography variant="h3" component="h1" color="primary">
-                            {this.state.name}
-                        </Typography>
-                        <Typography variant="h5" component="h2" color="secondary">
-                            {this.state.blocks.map(b =>
-                                <Box key={b} component="span" m={1}>[ {b} ]</Box>
-                            )}
-                        </Typography>
-                        <Typography color="textSecondary">
-                            {this.state.lastBlockHash}
-                        </Typography>
+                        <List>
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <PeersIcon />
+                                </ListItemAvatar>
+                                {this.state.peers.map(p =>
+                                    <ListItemText key={p.id} primary="Peer" secondary={p.name} />
+                                )}
+                            </ListItem>
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <BlocksIcon />
+                                </ListItemAvatar>
+                                <ListItemText primary="Las block Number" secondary={this.state.lastBlockNumber} />
+                                <ListItemAvatar>
+                                    <BranchIcon />
+                                </ListItemAvatar>
+                                <ListItemText primary="Branches" secondary={this.state.branches} />
+                            </ListItem>
+                            <ListItem>
+                                <ListItemAvatar>
+                                    <HashIcon />
+                                </ListItemAvatar>
+                                <ListItemText primary="Last block hash" secondary={this.state.lastBlockHash} />
+                            </ListItem>
+                        </List>
                     </CardContent>
-                    <CardActions>
-                        <Link to={`/node/${this.state.urlEncoded}`}>
-                            <Button>Expore</Button>
-                        </Link>
-                    </CardActions>
                 </Card>
             )
         }
