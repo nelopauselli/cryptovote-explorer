@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { Card, CardContent, CardActions, Typography, Box, Button } from '@material-ui/core';
 import { Link } from "react-router-dom";
 
-import Block from './Block'
-
 class NetworkItem extends Component {
     constructor(props) {
         super(props);
@@ -96,7 +94,6 @@ class NetworkItem extends Component {
                                 <Box key={b} component="span" m={1}>[ {b} ]</Box>
                             )}
                         </Typography>
-                        <Block url={this.state.url} hash={this.state.lastBlockHash} />
                         <Typography color="textSecondary">
                             {this.state.lastBlockHash}
                         </Typography>

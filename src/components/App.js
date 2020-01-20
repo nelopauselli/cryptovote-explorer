@@ -45,8 +45,7 @@ export default function App() {
             <Container bgcolor="primary" >
                 <Router>
                         <Switch>
-                            <Route path="/node/:url">
-                                <NodeX />
+                            <Route path="/node/:url" component={Node}>
                             </Route>
                             <Route path="/about">
                                 <About />
@@ -61,14 +60,6 @@ export default function App() {
                 </Router>
             </Container>
         </ThemeProvider>
-    );
-}
-
-function NodeX() {
-    let { url } = useParams();
-    console.log("url: ", url);
-    return (
-        <Node url={url}></Node>
     );
 }
 

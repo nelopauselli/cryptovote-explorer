@@ -1,30 +1,23 @@
 import React, { Component } from 'react';
-import { Link, useParams } from "react-router-dom";
-import { Grid, Breadcrumbs, Typography } from '@material-ui/core';
+import { Link } from "react-router-dom";
+import { Breadcrumbs, Typography } from '@material-ui/core';
 
-
+import Block from './Block';
 
 class Node extends Component {
     constructor(props) {
         super(props);
 
-        console.log("building Node");
-        let url = decodeURIComponent(props.url);
-        console.log("url: ", url);
+        let urlEncoded = props.match.params.url;
 
         this.state = {
-            url: url,
-            name: '?',
-            blocks: []
+            url: decodeURIComponent(urlEncoded),
+            urlEncoded: urlEncoded,
+            name: '?'
         };
     }
 
     componentDidMount() {
-        this.loadNodeInfo();
-        this.loadNodeLastBlock();
-    }
-
-    loadNodeInfo() {
         let url = this.state.url + '/api/node';
 
         fetch(url, {
@@ -51,34 +44,6 @@ class Node extends Component {
             });
     }
 
-    loadNodeLastBlock() {
-        let url = this.state.url + '/api/chain';
-
-        fetch(url, {
-            mode: 'cors',
-        }).then(res => {
-            return res.json();
-        }).then(result => {
-            let blocks = [];
-            for (let b = 0; b <= result.blockNumber; b++)
-                blocks.push(b);
-
-            this.setState({
-                hash: result.hash,
-                blocks: blocks
-            })
-        },
-            (error) => {
-                this.setState({
-                    error: error.message
-                });
-            }).catch(error => {
-                this.setState({
-                    error: error
-                });
-            });
-    }
-
     render() {
         return (
             <div>
@@ -88,15 +53,7 @@ class Node extends Component {
                     </Link>
                     <Typography color="textPrimary">{this.state.name}</Typography>
                 </Breadcrumbs>
-                <Grid container justify="center" spacing={2}>
-                    {
-                        this.state.blocks.map(b => (
-                            <Grid item key={b} xs={1}>
-                                [ {b} ]
-                            </Grid>
-                        ))
-                    }
-                </Grid>
+                <Block url={this.state.urlEncoded} hash={false}></Block>
             </div>
 
         )
