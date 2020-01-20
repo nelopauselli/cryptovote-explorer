@@ -44,7 +44,7 @@ class NetworkItem extends Component {
             this.setState({
                 error: null,
                 isLoaded: true,
-                url: result.publicUrl,
+                publicUrl: result.publicUrl,
                 name: result.name,
                 branches: result.branches,
                 lastBlockNumber: result.lastBlockNumber,
@@ -138,7 +138,7 @@ class NetworkItem extends Component {
                                 {this.state.name}
                             </Typography>
                         }
-                        subheader={this.state.url}
+                        subheader={this.state.publicUrl}
 
                     />
                     <CardContent>
@@ -147,9 +147,7 @@ class NetworkItem extends Component {
                                 <ListItemAvatar>
                                     <PeersIcon />
                                 </ListItemAvatar>
-                                {this.state.peers.map(p =>
-                                    <ListItemText key={p.id} primary="Peer" secondary={p.name} />
-                                )}
+                                <ListItemText primary="Peers" secondary={this.state.peers.map(p=>p.name).join(', ')} />
                             </ListItem>
                             <ListItem>
                                 <ListItemAvatar>
