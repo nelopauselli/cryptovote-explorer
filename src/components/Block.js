@@ -69,10 +69,6 @@ class Block extends Component {
                         Votes: {this.state.votes}
                     </Typography>
                 </CardContent>
-                <CardActions>
-                    <Button size="small">Previous</Button>
-                    <Button size="small">Next</Button>
-                </CardActions>
             </Card>
         )
     }
