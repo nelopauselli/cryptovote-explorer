@@ -9,14 +9,12 @@ class MapNode {
         this.peers = args.peers;
         this.position = args.position;
 
-        this.hexagonAngle = 0.523598776; // 30 degrees in radians
-        this.sideLength = 80;
+        this.radius = args.radius || 4;
+    }
 
-        this.hexHeight = Math.sin(this.hexagonAngle) * this.sideLength;
-        this.hexRadius = Math.cos(this.hexagonAngle) * this.sideLength;
-        this.hexRectangleHeight = this.sideLength + 2 * this.hexHeight;
-        this.hexRectangleWidth = 2 * this.hexRadius;
-
+    distanceTo(position) {
+        let d = Math.sqrt(Math.pow(Math.abs(this.position.x - position.x), 2) + Math.pow(Math.abs(this.position.y - position.y), 2));
+        return d;
     }
 
     render(context) {
@@ -24,32 +22,20 @@ class MapNode {
         let y = this.position.y;
 
         context.beginPath();
-        context.moveTo(x + this.hexRadius, y);
-        context.lineTo(x + this.hexRectangleWidth, y + this.hexHeight);
-        context.lineTo(x + this.hexRectangleWidth, y + this.hexHeight + this.sideLength);
-        context.lineTo(x + this.hexRadius, y + this.hexRectangleHeight);
-        context.lineTo(x, y + this.sideLength + this.hexHeight);
-        context.lineTo(x, y + this.hexHeight);
-        context.closePath();
-
-        context.fillStyle = "green";
+        context.arc(x, y, this.radius, 0, 2 * Math.PI, false);
+        context.fillStyle = 'green';
         context.fill();
-
-        context.fillStyle = "white";
-        context.font = "20px Georgia";
-        let textWidth = context.measureText(this.name).width;
-        context.fillText(this.name, this.position.x + (this.hexRadius * 2 - textWidth) / 2, this.position.y + this.hexRadius + 10);
     }
 
     renderPath(context, target) {
         context.strokeStyle = '#FFF';
-        context.lineWidth = 2;
+        context.lineWidth = .2;
 
-        let noise = (Math.random()-.5) * this.hexRadius * .8;
+        let noise = (Math.random() - .5) * this.radius * .8;
 
         context.beginPath();
-        context.moveTo(this.position.x + this.hexRadius + noise, this.position.y + this.hexRadius+noise);
-        context.lineTo(target.position.x + this.hexRadius+noise, target.position.y + this.hexRadius+noise);
+        context.moveTo(this.position.x + noise, this.position.y + noise);
+        context.lineTo(target.position.x + noise, target.position.y + noise);
         context.stroke();
     }
 }
@@ -62,7 +48,7 @@ class Map extends Component {
         this.state = {
             screen: {
                 width: window.innerWidth,
-                height: window.innerHeight-70,
+                height: window.innerHeight - 70,
                 ratio: window.devicePixelRatio || 1,
             },
             context: null,
@@ -78,38 +64,42 @@ class Map extends Component {
     }
 
     draw(context) {
-        let nodes = [
-            new MapNode({
-                id: 'n1',
-                url: 'http://cryptovote1/',
-                name: 'cryptovote1',
-                peers: ['n2', 'n3'],
-                position: {
-                    x: Math.random() * this.state.screen.width,
-                    y: Math.random() * this.state.screen.height
+        let nodes = [];
+
+        let width = this.refs.canvas.width;
+        let height = this.refs.canvas.height;
+
+        for (let i = 0; i < 50; i++) {
+            let id = `n-${i}`;
+            let name = `cryptovote${i}`;
+
+            let position;
+            while (true) {
+                let x = Math.random() * width;
+                let y = Math.random() * height;
+
+                let other = nodes.find(n => n.distanceTo({ x, y }) < 70);
+                if (other === undefined) {
+                    position = { x: x, y: y };
+                    break;
                 }
-            }),
-            new MapNode({
-                id: 'n2',
-                url: 'http://cryptovote2/',
-                name: 'cryptovote2',
-                peers: ['n3'],
-                position: {
-                    x: Math.random() * this.state.screen.width,
-                    y: Math.random() * this.state.screen.height
-                }
-            }),
-            new MapNode({
-                id: 'n3',
-                url: 'http://cryptovote3/',
-                name: 'cryptovote3',
-                peers: ['n1'],
-                position: {
-                    x: Math.random() * this.state.screen.width,
-                    y: Math.random() * this.state.screen.height
-                }
-            }),
-        ];
+            }
+
+            let node = new MapNode({
+                id: id,
+                url: `http://${name}/`,
+                name: name,
+                position: position,
+                peers: []
+            });
+
+            nodes.push(node);
+        }
+        nodes.map(node => {
+            let distances = nodes.map(n => ({ id: n.id, distance: n.distanceTo(node.position) }));
+            let nears = distances.sort((a, b) => (a.distance > b.distance) ? 1 : (a.distance < b.distance) ? -1 : 0);
+            node.peers = nears.slice(1, 5).map(n=>n.id);
+        });
 
         context.save();
 
