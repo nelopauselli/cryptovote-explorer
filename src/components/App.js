@@ -13,6 +13,7 @@ import green from '@material-ui/core/colors/green';
 import purple from '@material-ui/core/colors/purple';
 
 import Network from './Network';
+import Map from './Map';
 import Node from './Node';
 
 const theme = createMuiTheme({
@@ -44,17 +45,9 @@ export default function App() {
             <Container>
                 <Router>
                     <Switch>
-                        <Route path="/node/:url" component={Node}>
-                        </Route>
-                        <Route path="/about">
-                            <About />
-                        </Route>
-                        <Route path="/users">
-                            <Users />
-                        </Route>
-                        <Route path="/">
-                            <Network />
-                        </Route>
+                        <Route path="/node/:url" component={Node} />
+                        <Route path="/map" component={Map} />
+                        <Route path="/" component={Network} />
                     </Switch>
                 </Router>
             </Container>

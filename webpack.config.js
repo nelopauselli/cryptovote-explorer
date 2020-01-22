@@ -9,6 +9,7 @@ module.exports = {
     },
 
     devServer: {
+        historyApiFallback: true,
         port: 8000
     },
 
@@ -21,6 +22,10 @@ module.exports = {
                 test: /\.(js|jsx)$/,
                 use: ['babel-loader'],
                 exclude: /node_modules/
+            },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
             }
         ]
     },
